@@ -1,0 +1,50 @@
+{
+  "name": "pokemonapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --env.dev",
+    "build": "webpack",
+    "start": "webpack && node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickjm6/PokemonApp.git"
+  },
+  "keywords": [
+    "pokemon",
+    "node",
+    "javascript"
+  ],
+  "author": "Nick Monteleone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickjm6/PokemonApp/issues"
+  },
+  "homepage": "https://github.com/nickjm6/PokemonApp#readme",
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "body-parser": "^1.18.3",
+    "bootstrap": "^4.1.1",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "mongoose": "^5.2.2",
+    "popper.js": "^1.14.3",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "webpack": "^4.15.1",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "proxy": "http://localhost:80/",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "webpack-cli": "^3.0.8"
+  }
+}
