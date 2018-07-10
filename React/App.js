@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { Button, Alert, Jumbotron} from 'react-bootstrap';
 
 class Header extends Component {
     constructor(props){
@@ -9,10 +10,12 @@ class Header extends Component {
 
     render() {
         return (
-        <div class="container">
-          <div class="jumbotron" style={{textAlign: "center"}}>
+        <div className="container">
+          <Jumbotron style={{textAlign: "center", marginTop: 50 + "px"}}>
+            <Alert bsStyle="success">Hello</Alert>
             <h1>{this.state.message}</h1>
-          </div>
+            <Button bsStyle="info">Nothing Happens!</Button>
+          </Jumbotron>
         </div>
         )
     }

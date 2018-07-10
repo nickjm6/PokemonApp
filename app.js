@@ -10,8 +10,7 @@ var app = express();
 app.use("/javascript", express.static(__dirname + "/frontend/javascript"));
 app.use("/images", express.static(__dirname + "/frontend/images"));
 app.use("/css", express.static(__dirname + "/frontend/css"));
-app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/"));
-app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist/"))
+app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css/"));
 app.use(bodyParser.urlencoded({extended: false}))
 
 var htmlDirectory = __dirname + "/frontend/html/"
