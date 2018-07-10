@@ -74,3 +74,6 @@ config.js
 
 # Serverless directories
 .serverless
+
+# Bundled Js File
+react-bundle.js
