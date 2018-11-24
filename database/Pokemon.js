@@ -2,11 +2,15 @@ var mongoose = require("mongoose")
 
 var evolutionSchema = mongoose.Schema({
     name: String,
-    number: Number,
     type: String,
     level: Number,
     item: String,
     conditions: [String],
+    regions: [String]
+})
+
+var fromEvolutionSchema = mongoose.Schema({
+    name: String,
     regions: [String]
 })
 
@@ -17,6 +21,7 @@ var pokeSchema = mongoose.Schema({
     type2: String,
     generation: Number,
     evolvesInto: [evolutionSchema],
+    evolvesFrom: fromEvolutionSchema,
     image: Buffer,
     kanto_number: Number,
     johto_number: Number,
