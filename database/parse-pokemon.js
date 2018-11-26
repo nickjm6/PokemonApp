@@ -39,7 +39,100 @@ const missingTypes = [
     ["Fairy"],
     [],
     []
-]
+];
+
+const effectiveness = {
+    Normal: {
+        weak: ["Fighting"],
+        resistant: [],
+        unaffected: ["Ghost"]
+    },
+    Fire: {
+        weak: ["Water", "Ground", "Rock"],
+        resistant: ["Fire", "Grass", "Ice", "Bug", "Steel", "Fairy"],
+        unaffected: []
+    },
+    Water: {
+        weak: ["Electric", "Grass"],
+        resistant: ["Fire", "Water", "Ice", "Steel"],
+        unaffected: []
+    },
+    Electric: {
+        weak: ["Ground"],
+        resistant: ["Electric", "Flying", "Steel"],
+        unaffected: []
+    },
+    Grass: {
+        weak: ["Fire", "Ice", "Poison", "Flying", "Bug"],
+        resistant: ["Water", "Electric", "Grass", "Ground"],
+        unaffected: []
+    },
+    Ice: {
+        weak: ["Fire", "Fighting", "Rock", "Steel"],
+        resistant: ["Ice"],
+        unaffected: []
+    },
+    Fighting: {
+        weak: ["Flying", "Psychic", "Fairy"],
+        resistant: ["Bug", "Rock", "Dark"],
+        unaffected: []
+    },
+    Poison: {
+        weak: ["Ground", "Psychic"],
+        resistant: ["Grass", "Fighting", "Poison", "Bug", "Fairy"],
+        unaffected: []
+    },
+    Ground: {
+        weak: ["Water", "Grass", "Ice"],
+        resistant: ["Poison", "Rock"],
+        unaffected: ["Electric"]
+    },
+    Flying: {
+        weak: ["Electric", "Ice", "Rock"],
+        resistant: ["Grass", "Fighting", "Bug"],
+        unaffected: ["Ground"]
+    },
+    Psychic: {
+        weak: ["Bug", "Ghost", "Dark"],
+        resistant: ["Fighting", "Psychic"],
+        unaffected: []
+    },
+    Bug: {
+        weak: ["Fire", "Flying", "Rock"],
+        resistant: ["Grass", "Fighting", "Ground"],
+        unaffected: []
+    },
+    Rock: {
+        weak: ["Water", "Grass", "Fighting", "Ground", "Steel"],
+        resistant: ["Normal", "Fire", "Poison", "Flying"],
+        unaffected: []
+    },
+    Ghost: {
+        weak: ["Ghost", "Dark"],
+        resistant: ["Poison", "Bug"],
+        unaffected: ["Normal", "Fighting"]
+    },
+    Dragon: {
+        weak: ["Ice", "Dragon", "Fairy"],
+        resistant: ["Fire", "Water", "Electric", "Grass"],
+        unaffected: []
+    },
+    Dark: {
+        weak: ["Fighting", "Bug", "Fairy"],
+        resistant: ["Ghost", "Dark"],
+        unaffected: ["Psychic"]
+    },
+    Steel: {
+        weak: ["Fire", "Fighting", "Ground"],
+        resistant: ["Normal", "Grass", "Ice", "Flying", "Psychic", "Bug", "Rock", "Dragon", "Steel", "Fairy"],
+        unaffected: ["Poison"]
+    },
+    Fairy: {
+        weak: ["Poison", "Steel"],
+        resistant: ["Fighting", "Bug", "Dark"],
+        unaffected: ["Dragon"]
+    }
+}
 
 Pokemon.remove({}, () => {
     console.log("removed all pokemon entries");
@@ -53,6 +146,11 @@ let addPokemon = (pokemon, generation, introduced=1) => {
         number: pokemon.national_id,
         type1: pokemon.types[0],
         type2: pokemon.types.length > 1 && !missingTypes[generation].includes(pokemon.types[1])? pokemon.types[1] : null,
+        weaknesses: [],
+        superweaknesses: [],
+        resistances: [],
+        superresistances: [],
+        unaffected: [],
         generation: generation,
         evolvesInto: [],
         evolvesFrom: {name: pokemon.evolution_from && !missingPokemon[generation].includes(pokemon.evolution_from) ? pokemon.evolution_from : null, regions: []},
@@ -63,7 +161,59 @@ let addPokemon = (pokemon, generation, introduced=1) => {
         unova_number: regionArr[5] ? pokemon.unova_id : null,
         kalos_number: regionArr[6] ? pokemon.kalos_id : null,
         alola_id: regionArr[7] ? pokemon.alola_id : null
-    })
+    });
+    if(newPokemon.type2){
+        let eff1 = effectiveness[newPokemon.type1];
+        let eff2 = effectiveness[newPokemon.type2];
+        let seenTypes = []
+        for(let i = 0; i < eff1.weak.length; i++){
+            let weakness = eff1.weak[i];
+            seenTypes.push(weakness);
+            if(missingTypes[generation].includes(weakness))
+                continue
+            if(eff2.weak.includes(weakness))
+                newPokemon.superweaknesses.push(weakness);
+            else if(eff2.unaffected.includes(weakness))
+                newPokemon.unaffected.push(weakness);
+            else if(!eff2.resistant.includes(weakness))
+                newPokemon.weaknesses.push(weakness);;
+        }
+        for(let i = 0; i < eff1.unaffected.length; i++){
+            let unaffected = eff1.unaffected[i];
+            seenTypes.push(unaffected);
+            if(missingTypes[generation].includes(unaffected))
+                continue
+            newPokemon.unaffected.push(unaffected);
+        }
+        for(let i = 0; i < eff1.resistant.length; i++){
+            let resistance = eff1.resistant[i];
+            seenTypes.push(resistance);
+            if(missingTypes[generation].includes(resistance))
+                continue
+            if(eff2.unaffected.includes(resistance))
+                newPokemon.unaffected.push(resistance);
+            else if(eff2.resistant.includes(resistance))
+                newPokemon.superresistances.push(resistance);
+            else if(!eff2.weak.includes(resistance))
+                newPokemon.resistances.push(resistance);
+            
+        }
+        for(let i = 0; i < eff2.weak.length; i++)
+            if(!seenTypes.includes(eff2.weak[i]) && !missingPokemon[generation].includes(eff.weak[i]))
+                newPokemon.weaknesses.push(eff2.weak[i])
+        for(let i = 0; i < eff2.unaffected.length; i++)
+            if(!seenTypes.includes(eff2.unaffected[i]) && !missingPokemon[generation].includes(eff.unaffected[i]))
+                newPokemon.unaffected.push(eff2.unaffected[i])
+        for(let i = 0; i < eff2.resistant.length; i++)
+            if(!seenTypes.includes(eff2.resistant[i]) && !missingPokemon[generation].includes(eff.resistant[i]))
+                newPokemon.resistances.push(eff2.resistant[i])
+    } else {
+        eff = effectiveness[newPokemon.type1];
+        newPokemon.weaknesses = eff.weak.filter((x) => !missingTypes[generation].includes(x));
+        newPokemon.unaffected = eff.unaffected.filter((x) => !missingTypes[generation].includes(x));
+        newPokemon.resistances = eff.resistant.filter((x) => !missingTypes[generation].includes(x));
+    }
+
     for(let j = introduced; j <= generation; j++){
         if(!missingPokemon[j].includes(pokemon.evolution_from))
             newPokemon.evolvesFrom.regions.push(regions[j]);
