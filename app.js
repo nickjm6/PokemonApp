@@ -1,8 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dataAccess = require("./database/data-access");
+let config;
+try{
+    config = require("./config")
+} catch (e) {
+    throw new Error("Make sure you have a file named config.js in the root folder. Please use config-template.js as a template!")
+}
 
-const config = require("./config");
 
 mongoose.connect(config.mongoAddress);
 let app = express();
@@ -20,10 +25,16 @@ app.get("/", (req, res) => {
 
 app.get("/pokemon", (req, res) => {
 	let pokemon = req.query.name;
-	if(!pokemon)
+	let generation = req.query.generation || config.currentGen;
+	if(!pokemon || pokemon.length < 1)
 		res.status(400).json({message: "Please enter the name of the pokemon!"});
 	else{
-		res.json(dataAccess.queryPokemon(pokemon))
+		dataAccess.queryPokemon(pokemon, generation, (err, result) => {
+			if(err)
+				res.status(500).json({message: "Internal Server Error: " + err.message})
+			else
+				res.json(result);
+		})
 	}
 })
 

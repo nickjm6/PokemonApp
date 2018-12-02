@@ -1,19 +1,26 @@
 const pokejson = require("./pokemon-list.js");
 const Pokemon = require("./Pokemon.js");
+let config;
+try{
+    config = require("../config")
+} catch (e) {
+    throw new Error("Make sure you have a file named config.js in the root folder. Please use config-template.js as a template!")
+}
+
 
 const mongoose = require("mongoose");
-mongoose.connect(require("../config").mongoAddress);
+mongoose.connect(config.mongoAddress);
 
 const numGenerations = 7;
 
 const genRegions = [[],
-    [1, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0],
-    [1, 0, 1, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0, 1]
+    [0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 1]
 ]
 
 missingPokemon1 = ["Pichu", "Cleffa", "Igglybuff", "Crobat", "Bellossom", "Politoed", "Slowking", "Magnezone", "Steelix", "Tyrogue", "Hitmontop", "Lickilicky", "Rhyperior", "Happiny", "Blissey", "Tangrowth", "Kingdra", "Mime Jr.", "Scizor", "Smoochum", "Elekid", "Electivire", "Magby", "Magmortar", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Sylveon", "Porygon2", "Porygon-Z", "Munchlax"];
@@ -153,7 +160,7 @@ let addPokemon = (pokemon, generation, introduced=1) => {
         unaffected: [],
         generation: generation,
         evolvesInto: [],
-        evolvesFrom: {name: pokemon.evolution_from && !missingPokemon[generation].includes(pokemon.evolution_from) ? pokemon.evolution_from : null, regions: []},
+        evolvesFrom: pokemon.evolution_from && !missingPokemon[generation].includes(pokemon.evolution_from) ? {name: pokemon.evolution_from, regions: []} : null,
         kanto_number: regionArr[1] ? pokemon.kanto_id : null,
         johto_number: regionArr[2] ? pokemon.johto_id : null,
         hoenn_number: regionArr[3] ? pokemon.hoenn_id : null,
@@ -214,10 +221,12 @@ let addPokemon = (pokemon, generation, introduced=1) => {
         newPokemon.resistances = eff.resistant.filter((x) => !missingTypes[generation].includes(x));
     }
 
-    for(let j = introduced; j <= generation; j++){
-        if(!missingPokemon[j].includes(pokemon.evolution_from))
-            newPokemon.evolvesFrom.regions.push(regions[j]);
-    }
+    if(newPokemon.evolvesFrom)
+        for(let j = introduced; j <= generation; j++){
+            if(!missingPokemon[j].includes(pokemon.evolution_from))
+                newPokemon.evolvesFrom.regions.push(regions[j]);
+        }
+        
     for(let j = 0; j < pokemon.evolutions.length; j++){
         let evolution = pokemon.evolutions[j];
         if(missingPokemon[generation].includes(evolution.to))
