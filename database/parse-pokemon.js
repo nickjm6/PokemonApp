@@ -205,15 +205,21 @@ let addPokemon = (pokemon, generation, introduced=1) => {
                 newPokemon.resistances.push(resistance);
             
         }
-        for(let i = 0; i < eff2.weak.length; i++)
-            if(!seenTypes.includes(eff2.weak[i]) && !missingPokemon[generation].includes(eff.weak[i]))
-                newPokemon.weaknesses.push(eff2.weak[i])
-        for(let i = 0; i < eff2.unaffected.length; i++)
-            if(!seenTypes.includes(eff2.unaffected[i]) && !missingPokemon[generation].includes(eff.unaffected[i]))
-                newPokemon.unaffected.push(eff2.unaffected[i])
-        for(let i = 0; i < eff2.resistant.length; i++)
-            if(!seenTypes.includes(eff2.resistant[i]) && !missingPokemon[generation].includes(eff.resistant[i]))
-                newPokemon.resistances.push(eff2.resistant[i])
+        for(let i = 0; i < eff2.weak.length; i++){
+            let weakness = eff2.weak[i];
+            if(!seenTypes.includes(weakness) && !missingTypes[generation].includes(weakness))
+                newPokemon.weaknesses.push(weakness)
+        }
+        for(let i = 0; i < eff2.unaffected.length; i++){
+            let unaffected = eff2.unaffected[i]
+            if(!seenTypes.includes(unaffected) && !missingTypes[generation].includes(unaffected))
+                newPokemon.unaffected.push(unaffected)
+        }
+        for(let i = 0; i < eff2.resistant.length; i++){
+            let resistance = eff2.resistant[i]
+            if(!seenTypes.includes(resistance) && !missingTypes[generation].includes(resistance))
+                newPokemon.resistances.push(resistance)
+        }
     } else {
         eff = effectiveness[newPokemon.type1];
         newPokemon.weaknesses = eff.weak.filter((x) => !missingTypes[generation].includes(x));
@@ -226,7 +232,7 @@ let addPokemon = (pokemon, generation, introduced=1) => {
             if(!missingPokemon[j].includes(pokemon.evolution_from))
                 newPokemon.evolvesFrom.regions.push(regions[j]);
         }
-        
+
     for(let j = 0; j < pokemon.evolutions.length; j++){
         let evolution = pokemon.evolutions[j];
         if(missingPokemon[generation].includes(evolution.to))
