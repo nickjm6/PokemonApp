@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:postman",
+    "test:postman": "newman run ./test/postman/postman_tests.json",
     "dev": "webpack-dev-server --env.dev",
     "dbsetup": "node ./database/parse-pokemon.js",
     "build": "webpack && npm run dbsetup",
@@ -31,6 +32,7 @@
     "express": "^4.16.3",
     "jquery": "^3.3.1",
     "mongoose": "^5.2.2",
+    "newman": "^4.2.2",
     "popper.js": "^1.14.3",
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
