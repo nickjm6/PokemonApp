@@ -1,24 +1,58 @@
-var express = require("express");
-var mongoose = require("mongoose");
-var bodyParser = require("body-parser");
+const express = require("express");
+const mongoose = require("mongoose");
+const dataAccess = require("./database/data-access");
+const fs = require("fs");
+const https = require("https");
 
-var config = require("./config");
+
+let config;
+try{
+    config = require("./config")
+} catch (e) {
+    throw new Error("Make sure you have a file named config.js in the root folder. Please use config-template.js as a template!")
+}
+
+let credentials;
+try{
+	let key = fs.readFileSync("./server.key", "utf8");
+	let cert = fs.readFileSync("./server.cert", "utf8");
+	credentials = {key: key, cert: cert}
+} catch (e) {
+	throw new Error("Make sure you have server.cert and server.key in your root directory. Run 'npm run generate-key' if you do not!");
+}
+
+const portNumber = 1234;
+
 
 mongoose.connect(config.mongoAddress);
-var app = express();
+let app = express();
 
 app.use("/javascript", express.static(__dirname + "/frontend/javascript"));
 app.use("/images", express.static(__dirname + "/frontend/images"));
 app.use("/css", express.static(__dirname + "/frontend/css"));
 app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css/"));
-app.use(bodyParser.urlencoded({extended: false}))
 
-var htmlDirectory = __dirname + "/frontend/html/"
+const htmlDirectory = __dirname + "/frontend/html/"
 
-app.get("/", function(req, res){
+app.get("/", (req, res) => {
 	res.sendFile(htmlDirectory + "index.html")
 });
 
-app.listen(80, function(){
-	console.log("Server started on port 80");
+app.get("/pokemon", (req, res) => {
+	let pokemon = req.query.name;
+	let generation = req.query.generation || config.currentGen;
+	if(!pokemon || pokemon.length < 1)
+		res.status(400).json({message: "Please enter the name of the pokemon!"});
+	else{
+		dataAccess.queryPokemon(pokemon, generation, (err, result) => {
+			if(err)
+				res.status(500).json({message: "Internal Server Error: " + err.message})
+			else
+				res.json(result);
+		})
+	}
 })
+
+https.createServer(credentials, app).listen(portNumber, () => {
+	console.log("Server started on port: " + portNumber);
+});

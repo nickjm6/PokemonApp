@@ -4,10 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:postman",
+    "test:postman": "newman run ./test/postman/postman_tests.json",
     "dev": "webpack-dev-server --env.dev",
-    "build": "webpack",
-    "start": "node app.js"
+    "dbsetup": "node ./database/parse-pokemon.js",
+    "build": "npm run generate-key && webpack && npm run dbsetup",
+    "start": "node app.js",
+    "generate-key": "openssl req -nodes -new -x509 -keyout server.key -out server.cert"
   },
   "repository": {
     "type": "git",
@@ -26,11 +29,11 @@
   "homepage": "https://github.com/nickjm6/PokemonApp#readme",
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "body-parser": "^1.18.3",
     "bootstrap": "^4.1.1",
     "express": "^4.16.3",
     "jquery": "^3.3.1",
     "mongoose": "^5.2.2",
+    "newman": "^4.2.2",
     "popper.js": "^1.14.3",
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
