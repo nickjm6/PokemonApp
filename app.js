@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dataAccess = require("./database/data-access");
 const fs = require("fs");
 const https = require("https");
+const http = require("http");
 
 
 let config;
@@ -21,7 +22,8 @@ try{
 	throw new Error("Make sure you have server.cert and server.key in your root directory. Run 'npm run generate-key' if you do not!");
 }
 
-const portNumber = 1234;
+const sPortNumber = 1234;
+const portNumber = 9876;
 
 
 mongoose.connect(config.mongoAddress);
@@ -53,6 +55,10 @@ app.get("/pokemon", (req, res) => {
 	}
 })
 
-https.createServer(credentials, app).listen(portNumber, () => {
-	console.log("Server started on port: " + portNumber);
+https.createServer(credentials, app).listen(sPortNumber, () => {
+	console.log("https server started on port: " + portNumber);
 });
+
+http.createServer(app).listen(portNumber, () => {
+	console.log("http server started on port: " + portNumber)
+})
