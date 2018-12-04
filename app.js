@@ -1,12 +1,27 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dataAccess = require("./database/data-access");
+const fs = require("fs");
+const https = require("https");
+
+
 let config;
 try{
     config = require("./config")
 } catch (e) {
     throw new Error("Make sure you have a file named config.js in the root folder. Please use config-template.js as a template!")
 }
+
+let credentials;
+try{
+	let key = fs.readFileSync("./server.key", "utf8");
+	let cert = fs.readFileSync("./server.cert", "utf8");
+	credentials = {key: key, cert: cert}
+} catch (e) {
+	throw new Error("Make sure you have server.cert and server.key in your root directory. Run 'npm run generate-key' if you do not!");
+}
+
+const portNumber = 1234;
 
 
 mongoose.connect(config.mongoAddress);
@@ -38,6 +53,6 @@ app.get("/pokemon", (req, res) => {
 	}
 })
 
-app.listen(1234, () => {
-	console.log("Server started on port 1234");
-})
+https.createServer(credentials, app).listen(portNumber, () => {
+	console.log("Server started on port: " + portNumber);
+});

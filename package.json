@@ -8,8 +8,9 @@
     "test:postman": "newman run ./test/postman/postman_tests.json",
     "dev": "webpack-dev-server --env.dev",
     "dbsetup": "node ./database/parse-pokemon.js",
-    "build": "webpack && npm run dbsetup",
-    "start": "node app.js"
+    "build": "npm run generate-key && webpack && npm run dbsetup",
+    "start": "node app.js",
+    "generate-key": "openssl req -nodes -new -x509 -keyout server.key -out server.cert"
   },
   "repository": {
     "type": "git",

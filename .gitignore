@@ -77,3 +77,7 @@ config.js
 
 # Bundled Js File
 react-bundle.js
+
+# ssl files
+server.cert
+server.key
