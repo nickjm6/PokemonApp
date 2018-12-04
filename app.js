@@ -56,7 +56,7 @@ app.get("/pokemon", (req, res) => {
 })
 
 https.createServer(credentials, app).listen(sPortNumber, () => {
-	console.log("https server started on port: " + portNumber);
+	console.log("https server started on port: " + sPortNumber);
 });
 
 http.createServer(app).listen(portNumber, () => {
