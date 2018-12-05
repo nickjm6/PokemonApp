@@ -22,8 +22,8 @@ try{
 	throw new Error("Make sure you have server.cert and server.key in your root directory. Run 'npm run generate-key' if you do not!");
 }
 
-const sPortNumber = 443;
-const portNumber = 1234;;
+const sPortNumber = 9876;
+const portNumber = 1234;
 
 
 mongoose.connect(config.mongoAddress);
