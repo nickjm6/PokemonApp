@@ -15,8 +15,8 @@ try{
 
 let credentials;
 try{
-	let key = fs.readFileSync("./server.key");
-	let cert = fs.readFileSync("./server.cert");
+	let key = fs.readFileSync("./server.key", "utf8");
+	let cert = fs.readFileSync("./server.cert", "utf8");
 	credentials = {key: key, cert: cert}
 } catch (e) {
 	throw new Error("Make sure you have server.cert and server.key in your root directory. Run 'npm run generate-key' if you do not!");
