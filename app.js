@@ -53,6 +53,12 @@ app.get("/pokemon", (req, res) => {
 				res.json(result);
 		})
 	}
+});
+
+app.get("/pokemonList", (req, res) => {
+	let generation = req.query.generation || config.currentGen;
+	let fakeList = ["Pikachu", "Bulbasaur", "Eevee"];
+	res.json({pokelist: fakeList});
 })
 
 https.createServer(credentials, app).listen(sPortNumber, () => {
