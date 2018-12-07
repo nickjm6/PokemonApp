@@ -61,7 +61,7 @@ app.get("/pokemonList", (req, res) => {
 		if(err)
 			res.status(500).json({message: "Internal Server Error: " + err.message});
 		else	
-			res.json({poklist: lst});
+			res.json({pokelist: lst});
 	});
 });
 
