@@ -23,6 +23,19 @@ let queryPokemon = (name, generation, done) => {
     });
 }
 
+let pokemonList = (generation, done) => {
+    let pokegen = generation && generation > 0 && generation < currentGen ? generation : currentGen;
+    Pokemon.find({generation: pokegen}, (err, lst) => {
+        if(err)
+            return done(err);
+        let resLst = [];
+        for(let i = 0; i < lst.length; i++)
+            resLst.push(lst[i].name);
+        return done(null, resLst);
+    })
+}
+
 module.exports = {
-    queryPokemon: queryPokemon
+    queryPokemon: queryPokemon,
+    pokemonList: pokemonList
 }

@@ -57,9 +57,13 @@ app.get("/pokemon", (req, res) => {
 
 app.get("/pokemonList", (req, res) => {
 	let generation = req.query.generation || config.currentGen;
-	let fakeList = ["Pikachu", "Bulbasaur", "Eevee"];
-	res.json({pokelist: fakeList});
-})
+	dataAccess.pokemonList(generation, (err, lst) => {
+		if(err)
+			res.status(500).json({message: "Internal Server Error: " + err.message});
+		else	
+			res.json({poklist: lst});
+	});
+});
 
 https.createServer(credentials, app).listen(sPortNumber, () => {
 	console.log("https server started on port: " + sPortNumber);
